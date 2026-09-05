@@ -1,0 +1,22 @@
+trigger:
+- main
+
+pool:
+  name: Default
+
+steps:
+- checkout: self
+
+- powershell: |
+    sqlcmd `
+      -S localhost `
+      -d CICD_PR_Dev `
+      -E `
+      -b `
+      -i "$(Build.SourcesDirectory)\Deployments\001_AddContactColumns.sql"
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "Deployment failed."
+    }
+
+  displayName: 'Deploy Main SQL Changes'
