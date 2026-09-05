@@ -1,0 +1,24 @@
+trigger: none
+
+pool:
+  name: Default
+
+steps:
+- checkout: self
+
+- powershell: |
+    Write-Host "Validating SQL deployment files..."
+
+    $files = Get-ChildItem "$(Build.SourcesDirectory)\Deployments" -Filter *.sql
+
+    if ($files.Count -eq 0) {
+        throw "No SQL deployment files found."
+    }
+
+    foreach ($file in $files) {
+        Write-Host "Found SQL file: $($file.Name)"
+    }
+
+    Write-Host "Validation completed successfully."
+
+  displayName: 'Validate SQL Deployment Files'
